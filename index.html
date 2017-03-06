@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>中南大学升华网意见征集</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <link rel="icon" href="http://cdn.hr.so-on.cn/img/logo.png">
+    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.0/weui.min.css">
+    <link href="http://cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            background-color: #f8f8f8
+        }
+
+        body {
+            font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif
+        }
+
+        header {
+            margin: 50px auto 20px auto;
+            text-align: center;
+            color: #1273aa;
+        }
+
+        .weui-footer {
+            margin-top: 40px;
+        }
+		#remark {
+		    margin: 5px auto 5px auto;
+            text-align: center;
+            color: #1273aa;
+			font-size:10px;
+		}
+    </style>
+</head>
+<body>
+<header id="header">
+    <h1>升华网改版意见征集</h1>
+</header>
+<div align="center" class="animated bounceInLeft">
+    <i class="weui-icon-warn"></i>
+    <p>不了解升华网？</p>
+    <a href="http://54sh.csu.edu.cn/" target="_blank">点击查看升华网</a>
+</div>
+<div id="form">
+    <div class="weui-cells__title">性别</div>
+    <div class="weui-cells weui-cells_radio"><label class="weui-cell weui-check__label" for="r1">
+        <div class="weui-cell__bd">男</div>
+        <div class="weui-cell__ft">
+            <input required="" type="radio" class="weui-check" name="sex" value="male" id="r1"
+                   tips="请选择性别"> <span class="weui-icon-checked"></span>
+        </div>
+    </label>
+        <label class="weui-cell weui-check__label" for="r2">
+            <div class="weui-cell__bd">女</div>
+            <div class="weui-cell__ft"><input type="radio" name="sex" class="weui-check" value="female" id="r2"> <span
+                    class="weui-icon-checked"></span>
+            </div>
+        </label>
+    </div>
+    <div class="weui-cells weui-cells_form">
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">联系方式</label></div>
+            <div class="weui-cell__bd"><input class="weui-input" type="text" pattern="^.{0,20}$"
+                                              name="phone" id="phone"  placeholder="请输入电话或邮箱（选填）"
+                                              notmatchtips="输入联系方式过长"></div>
+            <div class="weui-cell__ft"><i class="weui-icon-warn"></i></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">简要标题</label></div>
+            <div class="weui-cell__bd"><input class="weui-input" type="text" pattern="^.{0,20}$"
+                                              name="title" id="title"   required="" placeholder="请输入简要标题（功能，外观等）" emptytips="请输入简要标题"
+                                              notmatchtips="输入标题过长"></div>
+            <div class="weui-cell__ft"><i class="weui-icon-warn"></i></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <textarea class="weui-textarea" placeholder="现有的升华网（网站）已经走过4年的岁月，为了更好的服务广大师生，升华网团队将对升华网进行改版升级，欢迎大家提出宝贵的意见" name="content" id="content" rows="5"
+                          emptytips="请输入您的意见"
+                          required=""></textarea>
+            </div>
+        </div>
+    </div>
+	<p id="remark">注：如果您不方便在此填写也可发送邮件到csutwwlxxb@163.com<br/>谢谢您的对我们工作的支持!</p>
+    <div class="weui-btn-area"><a id="formSubmitBtn" href="javascript:" class="weui-btn weui-btn_primary">提交</a></div>
+</div>
+<div class="weui-footer">
+    <p class="weui-footer__links">
+        <a href="http://54sh.csu.edu.cn/" class="weui-footer__link" target="_blank">中南大学升华网</a>
+        <a href="http://hr.so-on.cn/wj/xtz/" class="weui-footer__link" target="_blank">中南小团子意见征集</a>
+    </p>
+    <p class="weui-footer__text">©2017 54sh.csu.edu.cn</p>
+</div>
+<script src="http://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
+<script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
+<script>
+	var flag = 0;
+    // 表单提交
+    document.querySelector('#formSubmitBtn').addEventListener('click', function () {
+        weui.form.validate('#form', function (error) {
+            if (!error&&flag==0) {
+            	flag=1;
+                var loading = weui.loading('提交中...');
+                var loadingSetTimeOut = setTimeout(function () {
+					flag=0;
+                    loading.hide();
+                    weui.alert('请检查您的网络状况是否良好，您也可以发送邮件到csutwwlxxb@163.com，谢谢',{
+                        title: '联网失败'
+                    });
+                }, 10000);
+                $.post('http://hr.so-on.cn/wj/54sh/add.php?type=1', {
+                    'sex': $('input[name="sex"]:checked ').val(),
+                    'title': $('input#title').val(),
+                    'content': $('textarea#content').val(),
+                    'phone': $('input#phone').val()
+                }, function (data) {
+                })
+					.success(function(data) { 
+					clearTimeout(loadingSetTimeOut);
+                    data = JSON.parse(data);
+                    if (!data.status) {
+						flag=0;
+                        setTimeout(function () {
+                            loading.hide();
+                            weui.alert('请检查您的内容是否有特殊表情或字符，您也可以发送邮件到csutwwlxxb@163.com，谢谢',{
+                                title: '提交失败'
+                            });
+                        }, 1500);
+                    } else {
+                        setTimeout(function () {
+                            loading.hide();
+                            weui.toast('提交成功', 3000);
+                        }, 1500);
+                        $('input#title').val("");
+                        $('textarea#content').val("");
+                        $('input#phone').val("");
+                        window.location.href='http://hr.so-on.cn/wj/54sh/success.html';
+                    }
+					}
+					)
+				.error(function(data) { 
+						clearTimeout(loadingSetTimeOut);
+						flag=0;
+                        setTimeout(function () {
+                            loading.hide();
+                            weui.alert('请检查您的网络状况是否良好，您也可以发送邮件到csutwwlxxb@163.com，谢谢',{
+                                title: '提交失败'
+                            });
+                        }, 1500); });;
+            }
+        });
+    });
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?6ca1f2abafdc0692724c79da7417c48a";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</body>
+</html>
